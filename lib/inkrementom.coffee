@@ -15,12 +15,15 @@ module.exports = Inkrementom =
 
   operate: (num) ->
     editor = atom.workspace.getActiveTextEditor()
-    cursor = editor.getLastCursor()
-    position = cursor.getScreenPosition()
-    cursorWord = editor.getWordUnderCursor()
-    editor.selectWordsContainingCursors()
-    test = "20px"
-    s = cursorWord.split(/(\d+)([%px]{0,2})/)
+    position = editor.getLastCursor().getScreenPosition()
+    cursorWord = ""
+    atom.workspace.observeTextEditors(() ->
+        editor.selectWordsContainingCursors()
+        cursorWord = editor.getSelectedText()
+    )
+
+    test = "100%"
+    s = cursorWord.split(/(\d+)(\w+)/)
     console.log(s)
     console.log(cursorWord)
     incremented = ""
