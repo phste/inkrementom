@@ -15,25 +15,29 @@ module.exports = Inkrementom =
 
   operate: (num) ->
     editor = atom.workspace.getActiveTextEditor()
+    cursor = editor.getLastCursor()
+    position = cursor.getScreenPosition()
     cursorWord = editor.getWordUnderCursor()
-    cursor = editor.getLastCursor().getScreenPosition()
     editor.selectWordsContainingCursors()
-    test = "9px"
+    test = "20px"
     s = cursorWord.split(/(\d+)([%px]{0,2})/)
     console.log(s)
     console.log(cursorWord)
     incremented = ""
+    isNumber = false;
     for element in s
       do (element) ->
         if element != '' && !isNaN(element)
           fvalue = parseFloat(element)
           fvalue += num
           incremented += fvalue.toString();
+          isNumber = true
         else
           incremented += element
-    selection = editor.getLastSelection()
-    selection.insertText(incremented)
-    editor.setCursorScreenPosition(cursor)
+    if isNumber
+      selection = editor.getLastSelection()
+      selection.insertText(incremented)
+      editor.setCursorScreenPosition(position)
 
   increment: ->
     @operate(1)
