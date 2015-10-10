@@ -14,33 +14,33 @@ module.exports = Inkrementom =
     @subscriptions.dispose()
 
   operate: (num) ->
+
     editor = atom.workspace.getActiveTextEditor()
     position = editor.getLastCursor().getScreenPosition()
-    cursorWord = ""
-    atom.workspace.observeTextEditors(() ->
-        editor.selectWordsContainingCursors()
-        cursorWord = editor.getSelectedText()
-    )
 
-    test = "100%"
-    s = cursorWord.split(/(\d+)(\w+)/)
-    console.log(s)
-    console.log(cursorWord)
-    incremented = ""
-    isNumber = false;
-    for element in s
-      do (element) ->
-        if element != '' && !isNaN(element)
-          fvalue = parseFloat(element)
-          fvalue += num
-          incremented += fvalue.toString();
-          isNumber = true
-        else
-          incremented += element
-    if isNumber
+    editor.moveToBeginningOfWord()
+    editor.selectToNextWordBoundary()
+
+    #editor.selectWordsContainingCursors()
+    cursorWord = editor.getSelectedText()
+
+    console.log cursorWord
+
+    m = cursorWord.match(/(\d+)(\w*)/)
+
+    if m
+      number = parseFloat cursorWord
+
       selection = editor.getLastSelection()
-      selection.insertText(incremented)
+      console.log selection
+
+      blup = number + num
+      selection.insertText(blup.toString() + m[2])
       editor.setCursorScreenPosition(position)
+
+
+
+
 
   increment: ->
     @operate(1)
