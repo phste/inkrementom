@@ -8,5 +8,7 @@
 # For more detailed documentation see
 # https://atom.io/docs/latest/behind-atom-keymaps-in-depth
 'atom-workspace':
-  'ctrl-alt-o': 'inkrementom:inc',
-  'ctrl-alt-l': 'inkrementom:dec'
+  'ctrl-+': 'inkrementom:inc1',
+  'ctrl--': 'inkrementom:dec1',
+  'ctrl-alt-+': 'inkrementom:inc10',
+  'ctrl-alt-': 'inkrementom:dec10'

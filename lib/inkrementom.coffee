@@ -7,43 +7,31 @@ module.exports = Inkrementom =
     # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
     @subscriptions = new CompositeDisposable
     @subscriptions.add atom.commands.add 'atom-workspace',
-      'inkrementom:inc': => @increment(),
-      'inkrementom:dec': => @decrement()
+      'inkrementom:inc1': => @operate(1),
+      'inkrementom:dec1': => @operate(-1),
+      'inkrementom:inc10': => @operate(10),
+      'inkrementom:dec10': => @operate(-10)
 
   deactivate: ->
     @subscriptions.dispose()
 
-  operate: (num) ->
-
+  operate: (step) ->
     editor = atom.workspace.getActiveTextEditor()
     position = editor.getLastCursor().getScreenPosition()
 
-    editor.moveToBeginningOfWord()
-    editor.selectToNextWordBoundary()
+    # this is the only way to reliably select everything under the cursor
+    editor.selectToNextSubwordBoundary()
+    editor.selectWordsContainingCursors()
+    wordUnderCursor = editor.getSelectedText()
 
-    #editor.selectWordsContainingCursors()
-    cursorWord = editor.getSelectedText()
-
-    console.log cursorWord
-
-    m = cursorWord.match(/(\d+)(\w*)/)
+    # check if word under cursor is a number containing a post-fix
+    # eg px or %
+    m = wordUnderCursor.match(/(\d+)(\w*)/)
 
     if m
-      number = parseFloat cursorWord
-
+      postfix = m[2] # usually px or %
+      value = parseFloat wordUnderCursor
       selection = editor.getLastSelection()
-      console.log selection
-
-      blup = number + num
-      selection.insertText(blup.toString() + m[2])
+      adjustedValue = value + step
+      selection.insertText(adjustedValue.toString() + postfix)
       editor.setCursorScreenPosition(position)
-
-
-
-
-
-  increment: ->
-    @operate(1)
-
-  decrement: ->
-    @operate(-1)
